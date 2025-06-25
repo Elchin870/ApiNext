@@ -18,6 +18,20 @@ export default function StudentList() {
 
     if (!students) return <p>Loading ...</p>
 
+    async function handleDelete(id) {
+        const res = await fetch(`/api/students/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (res.ok) {
+            setStudents(prev => prev.filter(s => s.id !== id));
+        }
+        else {
+            const error = await res.json();
+            alert(error.error || "Failed to delete student");
+        }
+    }
+
     return (
         <div style={{ padding: 20 }}>
             {
@@ -26,6 +40,7 @@ export default function StudentList() {
                         students.map((s) => (
                             <li key={s.id}>
                                 <strong>{s.name} - {s.surname}</strong>
+                                <button style={{ backgroundColor: 'red', marginLeft: 10 }} onClick={() => handleDelete(s.id)} >Delete</button>
                             </li>
                         ))
                     }
